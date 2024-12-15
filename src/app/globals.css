@@ -18,6 +18,9 @@
 
 body {
   background: var(--background);
-
+  position: relative;
   font-family: "Inter";
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }

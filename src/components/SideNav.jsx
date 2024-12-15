@@ -19,7 +19,7 @@ const SideNav = () => {
     <div
       className={`${
         isOpen ? "w-60" : "w-[92px]"
-      } bg-[#161A23] text-[#9BA0A8] h-[82vh] m-[2%] mt-[6%] transition-all duration-300 flex flex-col rounded-xl border-r-2 border-[#2D2F39] relative`}
+      } bg-[#161A23] text-[#9BA0A8] z-50 h-[90vh] m-[2%] mt-[2%] transition-all duration-300 flex flex-col rounded-xl border-r-2 border-[#2D2F39] relative`}
     >
       {/* Toggle Button */}
       <button
@@ -35,6 +35,13 @@ const SideNav = () => {
 
       {/* Navigation */}
       <div className="flex-grow justify-center">
+        <Image
+          src="/assets/svg/logo-no-background.png"
+          height={1000}
+          width={10000}
+          className="w-52 p-6 "
+          alt="logo"
+        />
         <nav className="py-3 m-3 border-b-2 border-[#2D2F39]">
           <div className=" px-4 text-[#9BA0A8] uppercase font-Inter font-medium text-xs">
             Main
@@ -44,7 +51,7 @@ const SideNav = () => {
               {/* <i className="material-icons-outlined">home</i> */}
 
               <GrHomeRounded className="h-4 w-4 " />
-              {isOpen && <span className="ml-4">Dashboard</span>}
+              {isOpen && <span className="ml-4">Home</span>}
             </li>
             <li className="flex mx-3 items-center p-3 my-1  hover:bg-[#2D2F39] cursor-pointer hover:text-[#cccccc] rounded-lg">
               <GrSearch className="h-4 w-4  " />

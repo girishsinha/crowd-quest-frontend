@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import React from "react";
 import {
@@ -7,9 +8,12 @@ import {
   BsShare,
   BsInstagram,
 } from "react-icons/bs";
-import Card from "./Card";
+import Card from "@/components/Card";
+import { useSelector } from "react-redux";
 
 const ProfilePage = () => {
+  const { userData } = useSelector((state) => state.auth);
+
   return (
     // <div className="flex flex-col h-[100vh] bg-[#0F0F0F] text-[#9BA0A8] overflow-hidden">
     <div className="flex flex-row justify-end h-[100vh] w-auto ">
@@ -18,8 +22,8 @@ const ProfilePage = () => {
         {/* <div className="w-96 h-[82vh] bg-[#161A23] flex flex-col items-center p-6 border-r-2 border-[#2D2F39]"> */}
         {/* Profile Picture */}
         <div className=" w-full relative  mb-4">
-          <Image
-            src="/testimg.jpg"
+          <img
+            src={userData.avatar}
             alt="Profile Image"
             height={100}
             width={100}
@@ -28,8 +32,8 @@ const ProfilePage = () => {
           <div className="absolute bottom-3 right-3 bg-yellow-500 rounded-full  border-8 border-[#161A23] w-12 h-12"></div>
         </div>
         {/* Username and Bio */}
-        <h2 className="text-lg font-bold text-blue-500">HARSH GUPTA</h2>
-        <h3 className="text-sm ">@harshgupta01</h3>
+        <h2 className="text-lg font-bold text-blue-500">{userData.fullName}</h2>
+        <h3 className="text-sm ">{userData.username}</h3>
         <p className="text-start text-sm my-4 border-[#2D2F39] border-y-2 py-4 ">
           It is a long established fact that a reader will be distracted by the
           readable content of a page when looking at its layout.
@@ -49,8 +53,8 @@ const ProfilePage = () => {
       <div className="flex flex-col h-screenp p-6 ">
         {/* Cover Section */}
         <div className="h-[20%]">
-          <Image
-            src="/testimg.jpg"
+          <img
+            src={userData.coverImage}
             alt="Cover Image"
             height={100}
             width={100}
@@ -79,7 +83,7 @@ const ProfilePage = () => {
             {/* Additional Empty Cards for Layout */}
             {[...Array(5)].map((_, index) => (
               //
-              <Card />
+              <Card key={index} />
             ))}
           </div>
         </div>

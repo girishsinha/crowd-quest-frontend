@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { Component, useState } from "react";
+import Link from "next/link";
 import {
   GrSettingsOption,
   GrSearch,
@@ -10,16 +11,20 @@ import {
   GrFormPrevious,
   GrFormNext,
 } from "react-icons/gr";
+
+import { useSelector } from "react-redux";
+
 // import dynamic from "next/dynamic";
 
 const SideNav = () => {
   const [isOpen, setIsOpen] = useState(true);
+  const state = useSelector((state) => state.auth);
 
   return (
     <div
       className={`${
         isOpen ? "w-60" : "w-[92px]"
-      } bg-[#161A23] text-[#9BA0A8] z-50 h-[90vh] m-[2%] mt-[2%] transition-all duration-300 flex flex-col rounded-xl border-r-2 border-[#2D2F39] relative`}
+      } bg-[#161A23] text-[#9BA0A8] z-50 h-[90vh] m-[2%] mt-[2%]  transition-all duration-300 flex flex-col rounded-xl border-r-2 border-[#2D2F39] relative lt500:ml-[-5px]`}
     >
       {/* Toggle Button */}
       <button
@@ -36,9 +41,10 @@ const SideNav = () => {
       {/* Navigation */}
       <div className="flex-grow justify-center">
         <Image
+          priority={true}
           src="/assets/svg/logo-no-background.png"
-          height={1000}
-          width={10000}
+          height={500}
+          width={500}
           className="w-52 p-6 "
           alt="logo"
         />
@@ -47,11 +53,11 @@ const SideNav = () => {
             Main
           </div>
           <ul className="font-Inter font-medium text-sm text-[#9BA0A8]">
-            <li className="flex mx-3 items-center p-3 my-1 hover:bg-[#2D2F39] cursor-pointer hover:text-[#cccccc] rounded-lg ">
-              {/* <i className="material-icons-outlined">home</i> */}
-
-              <GrHomeRounded className="h-4 w-4 " />
-              {isOpen && <span className="ml-4">Home</span>}
+            <li className="mx-3 hover:bg-[#2D2F39] cursor-pointer hover:text-[#cccccc] rounded-lg ">
+              <Link href="/" className="flex  items-center p-3 my-1">
+                <GrHomeRounded className="h-4 w-4 " />
+                {isOpen && <span className="ml-4">Home</span>}
+              </Link>
             </li>
             <li className="flex mx-3 items-center p-3 my-1  hover:bg-[#2D2F39] cursor-pointer hover:text-[#cccccc] rounded-lg">
               <GrSearch className="h-4 w-4  " />
@@ -76,25 +82,39 @@ const SideNav = () => {
       </div>
 
       {/* Profile */}
-      <div className="p-3 mx-3 flex items-center border-b-2 border-[#2D2F39]">
-        <div className="flex items-center">
-          <Image
-            src="globe.svg"
-            alt="Profile"
-            height={1}
-            width={1}
-            className="rounded-full w-10 h-10"
-          />
-          {isOpen && (
-            <div className="ml-4">
-              <p className="text-[#9BA0A8] uppercase font-Inter font-medium text-xs">
-                Product Manager
-              </p>
-              <p className="text-sm  text-[#cccccc]">Harsh Gupta</p>
+      {state.status ? (
+        <div className="p-3 mx-3 flex items-center border-b-2 border-[#2D2F39]">
+          <Link href="/profile">
+            <div className="flex items-center">
+              <img
+                src={state.userData.avatar && state.userData.avatar}
+                alt="Profile"
+                height={1}
+                width={1}
+                className="rounded-full w-10 h-10 border-2 border-[#2D2F39] "
+              />
+              {isOpen && (
+                <div className="ml-4">
+                  <p className="text-[#9BA0A8] uppercase font-Inter font-medium text-xs">
+                    {state.userData.username}
+                  </p>
+                  <p className="text-sm  text-[#cccccc]">
+                    {state.userData.fullName}
+                  </p>
+                </div>
+              )}
             </div>
-          )}
+          </Link>
         </div>
-      </div>
+      ) : (
+        <Link
+          href="/auth/Login"
+          className="flex mx-3 items-center p-3 my-1  hover:bg-[#2D2F39] cursor-pointer hover:text-[#cccccc] rounded-lg"
+        >
+          <GrDocument className="h-4 w-4 " />
+          {isOpen && <span className="ml-4">Login</span>}
+        </Link>
+      )}
 
       {/* Settings */}
       <div className="p-3 mx-3">
@@ -113,3 +133,4 @@ const SideNav = () => {
 
 export default SideNav;
 // export default dynamic(() => Promise.resolve(SideNav), { ssr: false });
+// console.log(process.env.NEXT_PUBLIC_serverURL);

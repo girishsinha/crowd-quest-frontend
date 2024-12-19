@@ -1,16 +1,22 @@
+"use client"
 import Feed from "@/components/Feed";
-import Login from "@/components/Login";
-import ProfilePage from "@/components/ProfilePage";
-import Registration from "@/components/Registration";
+import Login from "@/app/auth/Login/page";
+
+import Signup from "@/app/auth/signup/page";
+import { useSelector } from "react-redux";
 
 
 export default function Home() {
+  const { status } = useSelector((state) => state.auth);
+
+
   return (
-    <main>
-      <Feed />
-      {/* <Login /> */}
-      {/* <Registration /> */}
-      <ProfilePage />
+    <main >
+      <div className="h-[100vh] no-scrollbar overflow-y-scroll ">
+        {status ? <Feed /> : <Login />}
+        {/* <Login /> */}
+        {/* <Registration /> */}
+      </div>
     </main>
 
   );

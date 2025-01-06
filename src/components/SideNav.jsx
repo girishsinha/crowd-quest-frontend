@@ -28,6 +28,7 @@ const SideNav = () => {
     >
       {/* Toggle Button */}
       <button
+        name="toggle"
         className="border-2 border-[#2D2F39] w-7 h-7 rounded-lg absolute top-7 -right-4 bg-[#161A23] "
         onClick={() => setIsOpen(!isOpen)}
       >

@@ -11,13 +11,10 @@ import {
 import Card from "@/components/Card";
 import { useSelector } from "react-redux";
 
-const ProfilePage = () => {
-  const { userData } = useSelector((state) => state.auth);
-
-  return (
-    // <div className="flex flex-col h-[100vh] bg-[#0F0F0F] text-[#9BA0A8] overflow-hidden">
-    <div className="flex flex-row justify-end h-[100vh] w-auto ">
-      {/* Sidebar */}
+const UserInfo = () => {
+  {
+    const { userData } = useSelector((state) => state.auth);
+    return (
       <div className="bg-[#161A23] text-[#9BA0A8] p-6 w-72 h-[82vh]  mt-[6%]  flex flex-col rounded-xl border-r-2 border-[#2D2F39] ">
         {/* <div className="w-96 h-[82vh] bg-[#161A23] flex flex-col items-center p-6 border-r-2 border-[#2D2F39]"> */}
         {/* Profile Picture */}
@@ -47,14 +44,25 @@ const ProfilePage = () => {
         </div>
         {/* Share Button */}
         {/* <button className="mt-4 px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600">
-          Share
-        </button> */}
+      Share
+    </button> */}
       </div>
+    );
+  }
+};
+
+const ProfilePage = () => {
+  const { userData } = useSelector((state) => state.auth);
+
+  return (
+    // <div className="flex flex-col h-[100vh] bg-[#0F0F0F] text-[#9BA0A8] overflow-hidden">
+    <div className="flex flex-row justify-end h-[100vh] w-auto ">
+      {/* Sidebar */}
       <div className="flex flex-col h-screenp p-6 ">
         {/* Cover Section */}
         <div className="h-[20%]">
           <img
-            src={userData.coverImage}
+            src={userData.coverImage && userData.coverImage}
             alt="Cover Image"
             height={100}
             width={100}
@@ -81,13 +89,14 @@ const ProfilePage = () => {
             {/* Example Card */}
 
             {/* Additional Empty Cards for Layout */}
-            {[...Array(5)].map((_, index) => (
+            {/* {[...Array(5)].map((_, index) => (
               //
-              <Card key={index} />
-            ))}
+              // <Card key={index} />
+            ))} */}
           </div>
         </div>
       </div>
+      <UserInfo />
     </div>
   );
 };

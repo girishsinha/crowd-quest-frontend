@@ -1,8 +1,9 @@
 "use client";
-// import Image from "next/image";
-import React from "react";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
 import { GrSettingsOption, GrHomeRounded } from "react-icons/gr";
 import { loginUser, logoutUser } from "@/slices/authSlice";
+import { getData } from "@/slices/problemSlice";
 
 import { BsChat, BsStarFill, BsStar, BsShare } from "react-icons/bs";
 import Card from "./Card";
@@ -14,6 +15,18 @@ const Feed = () => {
   const { loading, error, status, userData } = useSelector(
     (state) => state.auth
   );
+  const [page, setpage] = useState(1);
+  useEffect(() => {
+    dispatch(getData(page));
+  }, [dispatch]);
+  const problemData = useSelector((state) => state.problems);
+  if (problemData.error) {
+    return (
+      <div className="flex flex-col w-[75vw] items-center justify-center h-[100vh] ">
+        <h1 className="text-[#9BA0A8]">{problemData.error}</h1>
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col w-[75vw] items-center  h-[100vh] ">
       <div className="h-[15%] z-10 bg-[#0a0a0a] fixed w-full flex flex-row justify-around items-center">
@@ -33,12 +46,24 @@ const Feed = () => {
           </button>
         </div>
       </div>
-      <div className="w-[55rem]  grid grid-cols-1 sm:grid-cols-2 mt-28 lg:grid-cols-3 gap-4 p-4 no-scrollbar  rounded-lg shadow-md ">
-        {/* Card 1 */}
-        {[...Array(8)].map((_, index) => (
-          <Card key={index} />
-        ))}
-      </div>
+      {problemData.loading ? (
+        <div className="w-full h-full mt-28 flex items-center justify-center">
+          <Image
+            src="/assets/spooky.gif"
+            alt="loding..."
+            height={256}
+            width={256}
+          />
+        </div>
+      ) : (
+        <div className="w-[55rem]  grid grid-cols-1 sm:grid-cols-2 mt-28 lg:grid-cols-3 gap-4 p-4 no-scrollbar  rounded-lg shadow-md ">
+          {/* Card 1 */}
+          {problemData.problems &&
+            problemData.problems.map((data) => (
+              <Card key={data._id} data={data} />
+            ))}
+        </div>
+      )}
     </div>
   );
 };

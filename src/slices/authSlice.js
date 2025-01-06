@@ -17,7 +17,7 @@ export const signup = createAsyncThunk(
     async (formData, { rejectWithValue }) => {
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_serverURL}/users/register`,
+                `${process.env.NEXT_PUBLIC_serverURL}/api/users/register`,
                 {
                     method: "POST",
                     headers: {
@@ -50,7 +50,7 @@ export const loginUser = createAsyncThunk(
     async (loginData, { rejectWithValue }) => {
         try {
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_serverURL}/users/login`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_serverURL}/api/users/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -80,7 +80,7 @@ export const logoutUser = createAsyncThunk(
     async () => {
         try {
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_serverURL}/users/logout`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_serverURL}/api/users/logout`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -107,11 +107,11 @@ const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {
-        logout: (state) => {
-            state.status = false;
-            state.userData = null;
-            state.error = null;
-        }
+        // logout: (state) => {
+        //     state.status = false;
+        //     state.userData = null;
+        //     state.error = null;
+        // }
     },
     extraReducers: (builder) => {
         builder

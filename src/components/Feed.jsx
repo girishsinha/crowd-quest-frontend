@@ -15,10 +15,12 @@ const Feed = () => {
   const { loading, error, status, userData } = useSelector(
     (state) => state.auth
   );
+
+  const { successMessage } = useSelector((state) => state.problems);
   const [page, setpage] = useState(1);
   useEffect(() => {
     dispatch(getData(page));
-  }, [dispatch]);
+  }, [dispatch, successMessage]);
   const problemData = useSelector((state) => state.problems);
   if (problemData.error) {
     return (
@@ -27,6 +29,8 @@ const Feed = () => {
       </div>
     );
   }
+
+  console.log(problemData.problems);
   return (
     <div className="flex flex-col w-[75vw] items-center  h-[100vh] ">
       <div className="h-[15%] z-10 bg-[#0a0a0a] fixed w-full flex flex-row justify-around items-center">

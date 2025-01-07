@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { signup } from "@/slices/authSlice";
 import LoadingButton from "@/components/LoadingButton";
-import ImageLoader from "@/components/imageLoader";
+import ImageLoader from "@/components/ImageLoader";
 
 const Signup = () => {
   const [preview, setPreview] = useState(null);

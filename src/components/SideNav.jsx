@@ -64,10 +64,11 @@ const SideNav = () => {
               <GrSearch className="h-4 w-4  " />
               {isOpen && <span className="ml-4">Explore</span>}
             </li>
-            <li className="flex mx-3 items-center p-3 my-1 hover:bg-[#2D2F39] cursor-pointer hover:text-[#cccccc] rounded-lg">
-              <GrAddCircle className="h-4 w-4 " />
-
-              {isOpen && <span className="ml-4">Submit Problem</span>}
+            <li className="mx-3 hover:bg-[#2D2F39] cursor-pointer hover:text-[#cccccc] rounded-lg ">
+              <Link href="/problem/publish" className="flex  items-center p-3 my-1">
+                <GrAddCircle className="h-4 w-4 " />
+                {isOpen && <span className="ml-4">Submit Problem</span>}
+              </Link>
             </li>
             <li className="flex mx-3 items-center p-3 my-1  hover:bg-[#2D2F39] cursor-pointer hover:text-[#cccccc] rounded-lg">
               <GrDocument className="h-4 w-4 " />

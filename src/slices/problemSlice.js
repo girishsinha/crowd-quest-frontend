@@ -31,7 +31,31 @@ export const getData = createAsyncThunk(
         }
     }
 )
+export const getProblemsByUsername = createAsyncThunk(
+    "problems/getProblemsByUsername",
+    async (username, { rejectWithValue }) => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_serverURL}/api/problem/userProblems/${username}`, {
+                method: "GET",
+                headers: {},
+                credentials: "include",
 
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to getData");
+            }
+
+            const data = await response.json();
+
+            return data; // This is the data returned on successful login
+        } catch (error) {
+            // console.log(error.message) // Handle API call failure
+            // return error.message;
+            return rejectWithValue(error.message);
+        }
+    }
+)
 
 
 
@@ -56,6 +80,21 @@ const problemSlice = createSlice({
 
             })
             .addCase(getData.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+
+            })
+            .addCase(getProblemsByUsername.pending, (state, action) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(getProblemsByUsername.fulfilled, (state, action) => {
+                state.loading = false;
+
+                state.problems = action.payload.data;
+
+            })
+            .addCase(getProblemsByUsername.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
 

@@ -21,6 +21,28 @@ body {
   position: relative;
   font-family: "Inter";
 }
-.no-scrollbar::-webkit-scrollbar {
+/* .no-scrollbar::-webkit-scrollbar {
+  display: none;
+} */
+::-webkit-scrollbar:horizontal {
   display: none;
 }
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #2d2f39;
+  border-radius: 5px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  border: 0;
+}
+
+/* Handle on hover */
+/* ::-webkit-scrollbar-thumb:hover { */
+/* background: red; */
+/* } */

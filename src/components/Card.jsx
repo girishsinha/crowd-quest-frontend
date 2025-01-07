@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { BsChat, BsStarFill, BsStar, BsShare } from "react-icons/bs";
 
 const Card = ({ data }) => {
@@ -30,7 +31,9 @@ const Card = ({ data }) => {
             <BsChat />
             <BsShare />
           </div>
-          <button className="text-sm hover:underline">know more</button>
+          <button className="text-sm hover:underline">
+            <Link href={`/problem/${data._id}`}> know more</Link>
+          </button>
         </div>
       </div>
     </div>

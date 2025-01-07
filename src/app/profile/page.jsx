@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BsTwitterX,
   BsGithub,
@@ -9,7 +9,8 @@ import {
   BsInstagram,
 } from "react-icons/bs";
 import Card from "@/components/Card";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { getProblemsByUsername } from "@/slices/problemSlice";
 
 const UserInfo = () => {
   {
@@ -52,7 +53,20 @@ const UserInfo = () => {
 };
 
 const ProfilePage = () => {
+  const dispatch = useDispatch();
   const { userData } = useSelector((state) => state.auth);
+  const problemData = useSelector((state) => state.problems);
+  useEffect(() => {
+    dispatch(getProblemsByUsername(userData.username));
+  }, [dispatch]);
+
+  if (problemData.error) {
+    return (
+      <div className="flex flex-col w-[75vw] items-center justify-center h-[100vh] ">
+        <h1 className="text-[#9BA0A8]">{problemData.error}</h1>
+      </div>
+    );
+  }
 
   return (
     // <div className="flex flex-col h-[100vh] bg-[#0F0F0F] text-[#9BA0A8] overflow-hidden">
@@ -61,13 +75,15 @@ const ProfilePage = () => {
       <div className="flex flex-col h-screenp p-6 ">
         {/* Cover Section */}
         <div className="h-[20%]">
-          <img
-            src={userData.coverImage && userData.coverImage}
-            alt="Cover Image"
-            height={100}
-            width={100}
-            className="rounded-lg object-cover w-full h-full "
-          />
+          {userData.coverImage && (
+            <img
+              src={userData.coverImage}
+              alt="Cover Image"
+              height={100}
+              width={100}
+              className="rounded-lg object-cover w-full h-full "
+            />
+          )}
         </div>
         {/* Main Content */}
         <div className=" h-[80%] flex flex-col ">
@@ -84,16 +100,25 @@ const ProfilePage = () => {
             </button>
           </div>
 
-          {/* Cards Grid */}
-          <div className="w-full h-[80%] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4 no-scrollbar overflow-scroll rounded-lg ">
-            {/* Example Card */}
+          {problemData.loading ? (
+            <div className="w-full h-full mt-28 flex items-center justify-center">
+              <Image
+                src="/assets/spooky.gif"
+                alt="loding..."
+                height={256}
+                width={256}
+              />
+            </div>
+          ) : (
+            <div className="w-full h-[80%] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4 no-scrollbar overflow-scroll rounded-lg ">
+              {/* Example Card */}
 
-            {/* Additional Empty Cards for Layout */}
-            {/* {[...Array(5)].map((_, index) => (
-              //
-              // <Card key={index} />
-            ))} */}
-          </div>
+              {problemData.problems &&
+                problemData.problems.map((data) => (
+                  <Card key={data._id} data={data} />
+                ))}
+            </div>
+          )}
         </div>
       </div>
       <UserInfo />

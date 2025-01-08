@@ -4,6 +4,7 @@ import Link from "next/link";
 import { BsChat, BsStarFill, BsStar, BsShare } from "react-icons/bs";
 
 const Card = ({ data }) => {
+  const desc = data.description.split(" ").slice(0, 17).join(" ");
   return (
     <div
       //   key={index}
@@ -19,12 +20,12 @@ const Card = ({ data }) => {
             width={100}
             className="rounded-full border-2 border-[#2D2F39] h-10 w-10"
           />{" "}
-          <h2>{data.title}</h2>
+          <h2>{data.title.split(" ").slice(0, 6).join(" ")}</h2>
         </div>
         <h3 className="text-xs ml-12 text-blue-500">
           {data.createdBy.username}
         </h3>
-        <p className="text-xs h-[60%] py-2">{data.description}</p>
+        <p className="text-xs h-[60%] py-2">{desc}...</p>
         <div className="flex flex-row items-center justify-between w-[100%] border-t-2 border-[#2D2F39] pt-1 p-2">
           <div className="text-xl flex gap-3 ">
             <BsStar />

@@ -1,13 +1,15 @@
 "use client";
 // import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import React, { useState, useEffect } from "react";
 import { BsChat, BsStarFill, BsStar, BsShare } from "react-icons/bs";
+import { getComments, addComments } from "@/slices/commentSlice";
 
 const page = ({ params }) => {
   const [problemId, setProblemId] = useState(null);
   const [problemData, setproblemData] = useState(null);
   const [loading, setloading] = useState(true);
+  const dispatch = useDispatch();
 
   // Unwrap params using useEffect
   useEffect(() => {
@@ -70,7 +72,7 @@ const page = ({ params }) => {
       </svg>
     </div>
   ) : (
-    <div className="containe m-8 w-[75vw] overflow-auto">
+    <div className="container m-8 w-[75vw] overflow-auto">
       <div className=" w-[80%] bg-[#161A23] border-r-2 border-[#2D2F39] rounded-xl shadow flex flex-col items-center overflow-hidden">
         <img
           src={problemData.image}
@@ -111,7 +113,10 @@ const page = ({ params }) => {
             </div>
             <div className="text-xl flex gap-3 ">
               <BsStar />
-              <BsChat />
+              <BsChat
+                // onClick={() =>}
+                className="cursor-pointer hover:text-blue-500"
+              />
               <BsShare />
             </div>
             {/* <button className="text-sm hover:underline">know more</button> */}
@@ -119,8 +124,65 @@ const page = ({ params }) => {
           </div>
         </div>
       </div>
+      <h3 className="text-[#9BA0A8] p-4">-Solutions-</h3>
+      <Comments problemId={problemId} />
     </div>
   );
 };
 
 export default page;
+
+const Comments = ({ problemId }) => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getComments(problemId));
+  }, []);
+  const { comments } = useSelector((state) => state.comments);
+  // console.log(comments);
+  const [comment, setComment] = useState("");
+  const handleSend = () => {
+    dispatch(
+      getComments(
+        addComments({
+          content: comment,
+          problemId,
+        })
+      )
+    );
+    // console.log("ciked");
+  };
+
+  return (
+    comments[0] && (
+      <div className=" w-[70%] p-4 bg-[#161A23] text-[#9BA0A8] border-r-2 border-[#2D2F39] rounded-xl shadow flex flex-col justify-start items-start">
+        <input
+          type="text"
+          placeholder="write your solution"
+          className={`w-full p-3 rounded bg-[#2D2F39] ${"border-2 border-red-600 "}  border-2 focus:outline-none focus:border-none focus:ring-2 focus:ring-blue-500`}
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+        />{" "}
+        <button onClick={handleSend}>send</button>
+        {comments.map((data) => (
+          <div className=" border-t-2 my-2 border-[#2D2F39]" key={data._id}>
+            <div className="flex items-center py-2 justify-start gap-2">
+              <img
+                // src={problemData.createdBy.avatar}
+                src={data.createdBy.avatar}
+                alt="Profile"
+                height={100}
+                width={100}
+                className="rounded-full border-2 border-[#2D2F39] h-8 w-8"
+              />
+
+              <h3 className="text-xs  text-blue-500">
+                {data.createdBy.username}
+              </h3>
+            </div>
+            <h2>{data.content}</h2>
+          </div>
+        ))}
+      </div>
+    )
+  );
+};

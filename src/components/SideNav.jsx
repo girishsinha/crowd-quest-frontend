@@ -11,12 +11,15 @@ import {
   GrFormPrevious,
   GrFormNext,
 } from "react-icons/gr";
+// import useAuthCheck from "@/app/auth/authcheck";
 
 import { useSelector } from "react-redux";
 
 // import dynamic from "next/dynamic";
 
 const SideNav = () => {
+  // useAuthCheck();
+
   const [isOpen, setIsOpen] = useState(true);
   const state = useSelector((state) => state.auth);
 
@@ -65,7 +68,10 @@ const SideNav = () => {
               {isOpen && <span className="ml-4">Explore</span>}
             </li>
             <li className="mx-3 hover:bg-[#2D2F39] cursor-pointer hover:text-[#cccccc] rounded-lg ">
-              <Link href="/problem/publish" className="flex  items-center p-3 my-1">
+              <Link
+                href="/problem/publish"
+                className="flex  items-center p-3 my-1"
+              >
                 <GrAddCircle className="h-4 w-4 " />
                 {isOpen && <span className="ml-4">Submit Problem</span>}
               </Link>

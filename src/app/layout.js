@@ -18,10 +18,10 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en">
-      <body className="flex flex-row h-screen" >
+      <body className="flex flex-row">
         <ReduxProvider>
           <SideNav />
-          {children}
+          <div className="w-[80vw] h-screen overflow-y-scroll" > {children}</div>
           {/* <Analytics /> */}
         </ReduxProvider>
       </body>

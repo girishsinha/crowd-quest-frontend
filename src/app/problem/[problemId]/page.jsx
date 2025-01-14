@@ -137,33 +137,44 @@ const Comments = ({ problemId }) => {
   useEffect(() => {
     dispatch(getComments(problemId));
   }, []);
-  const { comments } = useSelector((state) => state.comments);
+  const { comments, loading } = useSelector((state) => state.comments);
   // console.log(comments);
   const [comment, setComment] = useState("");
   const handleSend = () => {
     dispatch(
-      getComments(
-        addComments({
-          content: comment,
-          problemId,
-        })
-      )
-    );
-    // console.log("ciked");
+      addComments({
+        content: comment,
+        problemId,
+      })
+    ).then(() => {
+      dispatch(getComments(problemId));
+      setComment("");
+    });
+    // console.log(problemId);
   };
 
   return (
     comments[0] && (
       <div className=" w-[70%] p-4 bg-[#161A23] text-[#9BA0A8] border-r-2 border-[#2D2F39] rounded-xl shadow flex flex-col justify-start items-start">
-        <input
-          type="text"
-          placeholder="write your solution"
-          className={`w-full p-3 rounded bg-[#2D2F39] ${"border-2 border-red-600 "}  border-2 focus:outline-none focus:border-none focus:ring-2 focus:ring-blue-500`}
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-        />{" "}
-        <button onClick={handleSend}>send</button>
-        {comments.map((data) => (
+        <div className="flex w-full gap-3">
+          <input
+            type="text"
+            placeholder="write your solution"
+            className={`w-full p-3 rounded bg-[#2D2F39]  focus:outline-none focus:border-none focus:ring-2 focus:ring-blue-500`}
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+          />{" "}
+          {/* <button onClick={handleSend}>send</button> */}
+          <button
+            type="button"
+            disabled={loading}
+            className="self-center py-2.5 px-5 me-2 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 inline-flex items-center"
+            onClick={handleSend}
+          >
+            {loading ? "sending..." : "send"}
+          </button>
+        </div>
+        {[...comments].reverse().map((data) => (
           <div className=" border-t-2 my-2 border-[#2D2F39]" key={data._id}>
             <div className="flex items-center py-2 justify-start gap-2">
               <img

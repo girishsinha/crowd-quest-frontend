@@ -70,9 +70,9 @@ const ProfilePage = () => {
 
   return (
     // <div className="flex flex-col h-[100vh] bg-[#0F0F0F] text-[#9BA0A8] overflow-hidden">
-    <div className="flex flex-row justify-end h-[100vh] w-auto ">
+    <div className="flex flex-row justify-end h-screen ">
       {/* Sidebar */}
-      <div className="flex flex-col h-screenp p-6 ">
+      <div className="flex flex-col  p-6 overflow-scroll  no-scrollbar">
         {/* Cover Section */}
         <div className="h-[20%]">
           {userData.coverImage && (
@@ -110,7 +110,7 @@ const ProfilePage = () => {
               />
             </div>
           ) : (
-            <div className="w-full h-[80%] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4 no-scrollbar overflow-scroll rounded-lg ">
+            <div className="w-full h-[80%] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4  rounded-lg ">
               {/* Example Card */}
 
               {problemData.problems &&

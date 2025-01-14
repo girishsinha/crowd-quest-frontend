@@ -66,7 +66,7 @@ export const loginUser = createAsyncThunk(
 
             const data = await response.json();
 
-            console.log(data)
+
             return data; // This is the data returned on successful login
         } catch (error) {
 

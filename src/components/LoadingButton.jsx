@@ -1,6 +1,6 @@
 import React from "react";
 
-const LoadingButton = () => {
+const LoadingButton = ({ name }) => {
   return (
     <button
       disabled
@@ -24,7 +24,7 @@ const LoadingButton = () => {
           fill="#1C64F2"
         />
       </svg>
-      Loading...
+      {name}...
     </button>
   );
 };

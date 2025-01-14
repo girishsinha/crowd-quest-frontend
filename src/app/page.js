@@ -4,15 +4,18 @@ import Login from "@/app/auth/Login/page";
 
 import Signup from "@/app/auth/signup/page";
 import { useSelector } from "react-redux";
-// import useAuthCheck from "@/app/auth/authcheck"
+import useAuthCheck from "@/app/auth/useAuthCheck";
+import { useEffect } from "react";
+
+
 
 export default function Home() {
-  // useAuthCheck();
   const { status } = useSelector((state) => state.auth);
+  useAuthCheck()
 
   return (
     <main >
-      <div className="h-[100vh] no-scrollbar overflow-y-scroll ">
+      <div>
         {status ? <Feed /> : <Login />}
         {/* <Login /> */}
         {/* <Registration /> */}

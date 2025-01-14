@@ -8,7 +8,7 @@ const initialState = {
 };
 
 export const getComments = createAsyncThunk(
-    "problems/getComments",
+    "comments/getComments",
     async (problemId, { rejectWithValue }) => {
         try {
             const response = await fetch(
@@ -35,18 +35,20 @@ export const getComments = createAsyncThunk(
     }
 )
 export const addComments = createAsyncThunk(
-    "problems/addComments",
+    "comments/addComments",
     async (comment, { rejectWithValue }) => {
+        // console.log(comment)
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_serverURL}/api/problem`,
+                `${process.env.NEXT_PUBLIC_serverURL}/api/comment`,
                 {
                     method: "POST",
                     headers: {
-                        "Custom-Header": "value",
+                        "Content-Type": "application/json",
                     },
-                    body: comment,
                     credentials: "include",
+                    body: JSON.stringify(comment),
+
                 }
             );
 

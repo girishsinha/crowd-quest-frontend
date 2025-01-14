@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { Component, useState } from "react";
+import React, { Component, useEffect, useState } from "react";
 import Link from "next/link";
 import {
   GrSettingsOption,
@@ -11,7 +11,7 @@ import {
   GrFormPrevious,
   GrFormNext,
 } from "react-icons/gr";
-// import useAuthCheck from "@/app/auth/authcheck";
+import useAuthCheck from "@/app/auth/useAuthCheck";
 
 import { useSelector } from "react-redux";
 

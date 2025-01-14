@@ -1,16 +1,21 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "@/slices/authSlice";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import LoadingButton from "@/components/LoadingButton";
+import { resetState2 } from "@/slices/problemSlice";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(resetState2()); // Reset the store if token is missing
+  });
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const dispatch = useDispatch();
 
   const { loading, error, status, userData } = useSelector(
     (state) => state.auth
@@ -71,7 +76,7 @@ const Login = () => {
           {/* Login Button */}
 
           {loading ? (
-            <LoadingButton />
+            <LoadingButton name={"Login"} />
           ) : (
             <button
               type="submit"

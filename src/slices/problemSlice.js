@@ -1,5 +1,7 @@
 "use client";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
+
 const initialState = {
     problems: [],
     loading: false,
@@ -19,9 +21,11 @@ export const getData = createAsyncThunk(
                     credentials: "include",
                 }
             );
-
+            if (response.status == 401) {
+                // console.log(response)
+            }
             if (!response.ok) {
-                throw new Error("Failed to getData");
+                throw new Error(response.statusText);
             }
 
             const data = await response.json();
@@ -46,7 +50,7 @@ export const getProblemsByUsername = createAsyncThunk(
             });
 
             if (!response.ok) {
-                throw new Error("Failed to getData");
+                throw new Error(response.Error);
             }
 
             const data = await response.json();
@@ -94,6 +98,8 @@ const problemSlice = createSlice({
     name: "problems",
     initialState,
     reducers: {
+        resetState2: () => initialState,
+
 
     },
     extraReducers: (builder) => {
@@ -147,5 +153,6 @@ const problemSlice = createSlice({
 
 
 // export const { logout } = authSlice.actions;
+export const { resetState2 } = problemSlice.actions;
 
 export default problemSlice.reducer;

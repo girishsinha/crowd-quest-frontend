@@ -167,22 +167,6 @@ const ProfilePage = ({ params }) => {
                 problemData.problems.map((data) => (
                   <Card key={data._id} data={data} />
                 ))}
-              {problemData.problems &&
-                problemData.problems.map((data) => (
-                  <Card key={data._id} data={data} />
-                ))}
-              {problemData.problems &&
-                problemData.problems.map((data) => (
-                  <Card key={data._id} data={data} />
-                ))}
-              {problemData.problems &&
-                problemData.problems.map((data) => (
-                  <Card key={data._id} data={data} />
-                ))}
-              {problemData.problems &&
-                problemData.problems.map((data) => (
-                  <Card key={data._id} data={data} />
-                ))}
             </div>
           )}
         </div>

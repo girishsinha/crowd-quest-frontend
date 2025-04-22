@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import React, { useState, useEffect } from "react";
 import { BsChat, BsStarFill, BsStar, BsShare } from "react-icons/bs";
 import { getComments, addComments } from "@/slices/commentSlice";
+import Link from "next/link";
 
 const page = ({ params }) => {
   const [problemId, setProblemId] = useState(null);
@@ -11,25 +12,30 @@ const page = ({ params }) => {
   const [loading, setloading] = useState(true);
   const dispatch = useDispatch();
 
-  // Unwrap params using useEffect
+  const { accessToken } = useSelector((state) => state.auth);
+
   useEffect(() => {
     const fetchParams = async () => {
       setloading(true);
       const resolvedParams = await params;
-      setProblemId(resolvedParams.problemId);
+      console.log(resolvedParams);
+      setProblemId(await resolvedParams.problemId);
     };
     fetchParams();
-    // console.log(problemId);
-    fetchData(problemId);
+
+    if (problemId) {
+      fetchData(problemId);
+    }
   }, [params, problemId]);
   const fetchData = async (problemId) => {
-    // console.log(problemId);
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_serverURL}/api/problem/${problemId}`,
         {
           method: "GET",
-          headers: {},
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
           credentials: "include",
         }
       );
@@ -41,18 +47,15 @@ const page = ({ params }) => {
       const data = await response.json();
       setproblemData(data.data);
       setloading(false);
-      return data; // This is the data returned on successful login
+      return data;
     } catch (error) {
-      // console.log(error.message) // Handle API call failure
+      console.log(error);
       return error.message;
     }
   };
 
-  //   if (problemId) {
-  //   }
-  //   console.log(problemData);
   return loading ? (
-    <div className="container flex justify-center items-center ">
+    <div className="h-full w-full flex justify-center items-center">
       <svg
         aria-hidden="true"
         role="status"
@@ -72,8 +75,8 @@ const page = ({ params }) => {
       </svg>
     </div>
   ) : (
-    <div className="container m-8 w-[75vw] overflow-auto">
-      <div className=" w-[80%] bg-[#161A23] border-r-2 border-[#2D2F39] rounded-xl shadow flex flex-col items-center overflow-hidden">
+    <div className="my-2 sm:w-[80%] w-full p-1 sm:p-0">
+      <div className=" bg-[#161A23] border-r-2 border-[#2D2F39] rounded-xl shadow flex flex-col items-center overflow-hidden">
         <img
           src={problemData.image}
           //   src=".././public/testimg.jpg"
@@ -86,6 +89,7 @@ const page = ({ params }) => {
           </div>
 
           <p className="text-sm h-[60%] py-2">
+            {problemData.description}
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores
             repudiandae facilis rerum hic neque, odio voluptatum inventore
             distinctio necessitatibus consequuntur facere eaque sit nam ducimus
@@ -93,7 +97,6 @@ const page = ({ params }) => {
             magnam placeat rerum provident nesciunt ullam mollitia iste
             molestiae sint suscipit reprehenderit, praesentium quasi aliquid.
             Natus.
-            {problemData.description}
           </p>
           <div className="flex flex-row items-center justify-between w-[100%] border-t-2 border-[#2D2F39] pt-1 p-2">
             <div>
@@ -113,10 +116,13 @@ const page = ({ params }) => {
             </div>
             <div className="text-xl flex gap-3 ">
               <BsStar />
-              <BsChat
-                // onClick={() =>}
-                className="cursor-pointer hover:text-blue-500"
-              />
+              {problemData.likeCount}
+              <Link href="#comments">
+                <BsChat
+                  // onClick={() =>}
+                  className="cursor-pointer hover:text-blue-500"
+                />
+              </Link>
               <BsShare />
             </div>
             {/* <button className="text-sm hover:underline">know more</button> */}
@@ -154,46 +160,51 @@ const Comments = ({ problemId }) => {
   };
 
   return (
-    comments[0] && (
-      <div className=" w-[70%] p-4 bg-[#161A23] text-[#9BA0A8] border-r-2 border-[#2D2F39] rounded-xl shadow flex flex-col justify-start items-start">
-        <div className="flex w-full gap-3">
-          <input
-            type="text"
-            placeholder="write your solution"
-            className={`w-full p-3 rounded bg-[#2D2F39]  focus:outline-none focus:border-none focus:ring-2 focus:ring-blue-500`}
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-          />{" "}
-          {/* <button onClick={handleSend}>send</button> */}
-          <button
-            type="button"
-            disabled={loading}
-            className="self-center py-2.5 px-5 me-2 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 inline-flex items-center"
-            onClick={handleSend}
-          >
-            {loading ? "sending..." : "send"}
-          </button>
-        </div>
-        {[...comments].reverse().map((data) => (
-          <div className=" border-t-2 my-2 border-[#2D2F39]" key={data._id}>
-            <div className="flex items-center py-2 justify-start gap-2">
-              <img
-                // src={problemData.createdBy.avatar}
-                src={data.createdBy.avatar}
-                alt="Profile"
-                height={100}
-                width={100}
-                className="rounded-full border-2 border-[#2D2F39] h-8 w-8"
-              />
+    <section
+      id="comments"
+      className=" sm:w-[70%] w-full p-4 bg-[#161A23] text-[#9BA0A8] border-r-2 border-[#2D2F39] rounded-xl shadow flex flex-col justify-start items-start"
+    >
+      <div className="flex w-full gap-3">
+        <input
+          type="text"
+          placeholder="write your solution"
+          className={`w-full p-3 rounded bg-[#2D2F39]  focus:outline-none focus:border-none focus:ring-2 focus:ring-blue-500`}
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+        />
 
-              <h3 className="text-xs  text-blue-500">
-                {data.createdBy.username}
-              </h3>
-            </div>
-            <h2>{data.content}</h2>
-          </div>
-        ))}
+        <button
+          type="button"
+          disabled={loading}
+          className="self-center py-2.5 px-5 me-2 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 inline-flex items-center"
+          onClick={handleSend}
+        >
+          {loading ? "sending..." : "send"}
+        </button>
       </div>
-    )
+
+      {[...comments].reverse().map((data) => (
+        <div
+          className=" border-t-2 my-2 w-full border-[#2D2F39]"
+          key={data._id}
+        >
+          <div className="flex items-center py-2 justify-start gap-2">
+            <img
+              // src={problemData.createdBy.avatar}
+              src={data.createdBy.avatar}
+              alt="Profile"
+              height={100}
+              width={100}
+              className="rounded-full border-2 border-[#2D2F39] h-8 w-8"
+            />
+
+            <h3 className="text-xs  text-blue-500">
+              {data.createdBy.username}
+            </h3>
+          </div>
+          <h2>{data.content}</h2>
+        </div>
+      ))}
+    </section>
   );
 };

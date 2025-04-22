@@ -3,6 +3,8 @@ import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import authSlice from '../slices/authSlice';
 import problemSlice from '../slices/problemSlice';
 import commentSlice from '../slices/commentSlice';
+import userSlice from '../slices/userSlice'
+import profileSlice from '@/slices/profileSlice'
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
@@ -22,6 +24,8 @@ const rootReducer = combineReducers({
     auth: persistedReducer,
     problems: problemSlice,
     comments: commentSlice,
+    user: userSlice,
+    profile: profileSlice,
 })
 
 
@@ -30,13 +34,14 @@ const store = configureStore({
     // reducer: {
     //     reducer: persistedReducer,
     //     //TODO: add more slices here for posts
-    // }
+    // },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: {
                 ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
             },
         }),
+
 });
 
 

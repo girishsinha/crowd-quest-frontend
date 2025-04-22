@@ -48,8 +48,8 @@ const Signup = () => {
   };
 
   return (
-    <div className=" w-[75vw]  flex flex-col items-center m-8 container overflow-auto text-[#9BA0A8]">
-      <div className="w-[100%]  m-2 sm:w-[400px] bg-[#161A23] p-6 border-r-2 border-[#2D2F39] rounded-xl ">
+    <div className=" sm:w-[75vw]  flex flex-col items-center sm:m-8 m-2 container overflow-auto text-[#9BA0A8]">
+      <div className="w-[100%]  sm:m-2 sm:w-[400px] bg-[#161A23] p-6 border-r-2 border-[#2D2F39] rounded-xl ">
         {/* Avatar Upload */}
 
         <div className="flex items-center justify-center  p-6">

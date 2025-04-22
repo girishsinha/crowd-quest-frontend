@@ -9,13 +9,18 @@ const initialState = {
 
 export const getComments = createAsyncThunk(
     "comments/getComments",
-    async (problemId, { rejectWithValue }) => {
+    async (problemId, { rejectWithValue, getState }) => {
         try {
+            const state = getState();
+            const accessToken = state.auth.accessToken;
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_serverURL}/api/comment/${problemId}`,
                 {
                     method: "GET",
-                    headers: {},
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`
+
+                    },
                     credentials: "include",
                 }
             );
@@ -36,15 +41,19 @@ export const getComments = createAsyncThunk(
 )
 export const addComments = createAsyncThunk(
     "comments/addComments",
-    async (comment, { rejectWithValue }) => {
+    async (comment, { rejectWithValue, getState }) => {
         // console.log(comment)
         try {
+            const state = getState();
+            const accessToken = state.auth.accessToken;
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_serverURL}/api/comment`,
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${accessToken}`
+
                     },
                     credentials: "include",
                     body: JSON.stringify(comment),

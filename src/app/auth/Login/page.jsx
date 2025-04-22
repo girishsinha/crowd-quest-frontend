@@ -2,35 +2,35 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "@/slices/authSlice";
+import { loginUser, refreshToken } from "@/slices/authSlice";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import LoadingButton from "@/components/LoadingButton";
-import { resetState2 } from "@/slices/problemSlice";
+import { getCurrentUser } from "@/slices/userSlice";
 
 const Login = () => {
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(resetState2()); // Reset the store if token is missing
-  });
+  const { loading, error, status } = useSelector((state) => state.auth);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const { loading, error, status, userData } = useSelector(
-    (state) => state.auth
-  );
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const isEmail = emailRegex.test(email);
   if (status) {
+    dispatch(getCurrentUser());
     redirect("/");
   }
   const handleSubmit = (e) => {
     e.preventDefault();
+    const loginData = {
+      [isEmail ? "email" : "username"]: email,
+      password,
+    };
 
-    // Dispatch the loginUser thunk
-    dispatch(loginUser({ email, password }));
+    dispatch(loginUser(loginData));
   };
   return (
-    <div className=" w-[70vw] flex justify-center items-center h-screen text-[#9BA0A8]">
+    <div className=" sm:w-[70vw] flex justify-center items-center h-screen text-[#9BA0A8]">
       <div className="w-[90%] sm:w-[400px] bg-[#161A23] p-6 border-r-2 border-[#2D2F39] rounded-xl">
         {/* Logo */}
         <Image
@@ -39,7 +39,7 @@ const Login = () => {
           height={500}
           width={500}
           alt="logo"
-          className="h-20 w-full mb-6 "
+          className="h-20 w-full sm:mb-6 "
         />
         <p className="text-center m-2 h-8 text-red-600">{error && error}</p>
         {/* {error && <p className="text-center p-2 text-red-600">{error}</p>} */}
@@ -101,7 +101,7 @@ const Login = () => {
         <p className="text-center text- ">
           Don't have an account?{" "}
           <Link
-            href="auth/signup"
+            href="/auth/signup"
             className="text-blue-500 hover:underline hover:cursor-pointer"
           >
             Sign up

@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   GrSettingsOption,
@@ -11,37 +11,60 @@ import {
   GrFormPrevious,
   GrFormNext,
 } from "react-icons/gr";
-import useAuthCheck from "@/app/auth/useAuthCheck";
 
-import { useSelector } from "react-redux";
-
-// import dynamic from "next/dynamic";
+import { useSelector, useDispatch } from "react-redux";
+import { getCurrentUser } from "@/slices/userSlice";
 
 const SideNav = () => {
-  // useAuthCheck();
-
-  const [isOpen, setIsOpen] = useState(true);
+  const dispatch = useDispatch();
   const state = useSelector((state) => state.auth);
+  const user = useSelector((state) => state.user);
+  useEffect(() => {
+    (async () => {
+      dispatch(getCurrentUser());
+    })();
+  }, []);
+  const navRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(true);
+  useEffect(() => {
+    // const nav = navRef.current;
+    // const navLinks = nanLinksRef.current;
+
+    // this function is for handale sidenavbar behaviour in the mobile screen
+    // close the nav bar when click out side the nav
+    const isMobile = window.innerWidth < 632; // Common breakpoint for mobile screens
+    if (isMobile) {
+      const handleClickOutside = (event) => {
+        if (navRef.current && !navRef.current.contains(event.target)) {
+          setIsOpen(true);
+        }
+      };
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }
+  }, []);
 
   return (
     <div
+      ref={navRef}
       className={`${
-        isOpen ? "w-60" : "w-[92px]"
-      } bg-[#161A23] text-[#9BA0A8] z-50 h-[90vh] m-[2%] mt-[2%]  transition-all duration-300 flex flex-col rounded-xl border-r-2 border-[#2D2F39] relative lt500:ml-[-5px]`}
+        isOpen ? "sm:w-2/7 xl:w-1/6  sm:left-0 -left-56" : "w-[92px]  left-0"
+      } bg-[#161A23] text-[#9BA0A8] z-50 h-[90vh] m-[2%] mt-[2%]  transition-all duration-300 flex flex-col rounded-xl border-r-2 border-[#2D2F39] sm:relative absolute lt500:ml-[-5px]`}
     >
       {/* Toggle Button */}
       <button
         name="toggle"
-        className="border-2 border-[#2D2F39] w-7 h-7 rounded-lg absolute top-7 -right-4 bg-[#161A23] "
+        className="border-2 border-[#2D2F39] opacity-100 w-7 h-7 rounded-lg absolute top-7 sm:-right-4 -right-9 bg-[#161A23] "
         onClick={() => setIsOpen(!isOpen)}
       >
         {isOpen ? (
-          <GrFormPrevious className="m-auto" />
+          <GrFormPrevious className="m-auto sm:rotate-0 rotate-180" />
         ) : (
-          <GrFormNext className="m-auto" />
+          <GrFormNext className="m-auto sm:rotate-0 rotate-180" />
         )}
       </button>
-
       {/* Navigation */}
       <div className="flex-grow justify-center">
         <Image
@@ -67,7 +90,7 @@ const SideNav = () => {
               <GrSearch className="h-4 w-4  " />
               {isOpen && <span className="ml-4">Explore</span>}
             </li>
-            <li className="mx-3 hover:bg-[#2D2F39] cursor-pointer hover:text-[#cccccc] rounded-lg ">
+            <li className="flex mx-3 hover:bg-[#2D2F39] cursor-pointer hover:text-[#cccccc] rounded-lg ">
               <Link
                 href="/problem/publish"
                 className="flex  items-center p-3 my-1"
@@ -90,12 +113,12 @@ const SideNav = () => {
       </div>
 
       {/* Profile */}
-      {state.status ? (
+      {state.status && user.userData ? (
         <div className="p-3 mx-3 flex items-center border-b-2 border-[#2D2F39]">
-          <Link href="/profile">
+          <Link href={`/profile/${user.userData.username}`}>
             <div className="flex items-center">
               <img
-                src={state.userData.avatar && state.userData.avatar}
+                src={user.userData.avatar && user.userData.avatar}
                 alt="Profile"
                 height={1}
                 width={1}
@@ -104,10 +127,10 @@ const SideNav = () => {
               {isOpen && (
                 <div className="ml-4">
                   <p className="text-[#9BA0A8] uppercase font-Inter font-medium text-xs">
-                    {state.userData.username}
+                    {user.userData.username}
                   </p>
                   <p className="text-sm  text-[#cccccc]">
-                    {state.userData.fullName}
+                    {user.userData.fullName}
                   </p>
                 </div>
               )}

@@ -6,10 +6,8 @@ import { publishProblem } from "@/slices/problemSlice";
 import { useRouter } from "next/navigation";
 import { getData } from "@/slices/problemSlice";
 import LoadingButton from "@/components/LoadingButton";
-import useAuthCheck from "@/app/auth/useAuthCheck";
 
 const page = () => {
-  useAuthCheck();
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -21,7 +19,9 @@ const page = () => {
     tags: [],
   });
 
-  const { loading, error, problems } = useSelector((state) => state.problems);
+  const { loading, error, problems, successMessage } = useSelector(
+    (state) => state.problems
+  );
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -52,7 +52,7 @@ const page = () => {
     formData.append("tags", formValues.tags);
     formData.append("image", selectedImage);
 
-    dispatch(publishProblem(formData));
+    await dispatch(publishProblem(formData));
 
     if (problems) {
       setFormValues({
@@ -63,15 +63,15 @@ const page = () => {
       setPreview(null);
       setSelectedImage(null);
 
-      alert("Problem published successfully!");
-
-      router.push("/");
+      if (successMessage) {
+        router.push("/");
+      }
     }
   };
 
   return (
-    <div className="w-8/12 m-4 rounded-xl border-r-2 border-[#2D2F39] bg-[#161A23] text-[#9BA0A8]">
-      <div className="flex flex-col items-center justify-center p-4 ">
+    <div className="sm:w-2/3 w-full h-auto m-4 rounded-xl  border-r-2 border-[#2D2F39] bg-[#161A23] text-[#9BA0A8] overflow-y-scroll">
+      <div className="flex flex-col items-center justify-center p-4">
         <form
           className="flex w-full flex-col gap-10 items-center justify-center"
           onSubmit={handleUpload}

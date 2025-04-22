@@ -1,10 +1,11 @@
 "use client"
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { redirect } from "next/navigation";
 
 
 const initialState = {
     status: false,
-    userData: null, //user data
+    accessToken: null,
     loading: false, // To track API call status
     error: null, // To store error messages
     successMessage: null,
@@ -61,15 +62,15 @@ export const loginUser = createAsyncThunk(
             });
 
             if (!response.ok) {
-                throw new Error("Failed to login");
+                // console.log(response.statusText)
+                if (response.status === 401) {
+                    throw new Error("Invalid user credentials")
+                }
+                throw new Error(response.statusText);
             }
-
             const data = await response.json();
-
-
             return data; // This is the data returned on successful login
         } catch (error) {
-
             return rejectWithValue(error.message); // Handle API call failure
         }
     }
@@ -77,14 +78,15 @@ export const loginUser = createAsyncThunk(
 
 export const logoutUser = createAsyncThunk(
     "auth/logoutUser",
-    async () => {
+    async (_, { rejectWithValue, getState }) => {
         try {
-
+            const state = getState();
+            const token = state.auth?.accessToken;
             const response = await fetch(`${process.env.NEXT_PUBLIC_serverURL}/api/users/logout`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
 
+                    Authorization: `Bearer ${token}`
                 },
                 credentials: "include",
 
@@ -96,23 +98,81 @@ export const logoutUser = createAsyncThunk(
 
             const data = await response.json();
 
-            return data; // This is the data returned on successful login
+            return data; // This is the data returned on successful logout
         } catch (error) {
-            return error.message; // Handle API call failure
+            return rejectWithValue(error.message); // Handle API call failure
         }
     }
 );
+
+// export const getCurrentUser = createAsyncThunk(
+//     "auth/getCurrentUser",
+//     async ({ rejectWithValue, dispatch, getState }) => {
+//         try {
+//             const state = getState();
+//             const token = state.auth?.accessToken;
+//             console.log("2")
+//             console.log("called")
+//             const response = await fetch(`${process.env.NEXT_PUBLIC_serverURL}/api/users/current-user`, {
+//                 method: "GET",
+//                 headers: {
+//                     Authorization: `Bearer ${token}`
+
+//                 },
+//                 credentials: "include",
+
+//             });
+
+//             if (!response.ok) {
+//                 throw new Error("Failed to login");
+//             }
+//             // if (response.status == 401) {
+//             //     await dispatch(refreshToken());
+//             // }
+
+//             const data = await response.json();
+
+
+//             return data; // This is the data returned on successful login
+//         } catch (error) {
+//             return rejectWithValue(error.message); // Handle API call failure
+//         }
+//     }
+// );
+export const refreshToken = createAsyncThunk(
+    "auth/refreshtoken", async (_, { rejectWithValue }) => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_serverURL}/api/users/refresh-token`, {
+                method: "POST",
+                headers: {
+
+                },
+                credentials: "include",
+
+            });
+
+            if (!response.ok) {
+                throw new Error(response.statusText);
+            }
+
+            const data = await response.json();
+
+
+            // await dispatch(getCurrentUser());
+            return data; // This is the data returned on successful login
+
+        } catch (error) {
+            // Handle API call failure
+            return rejectWithValue(message);
+        }
+    })
+
 
 const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {
-        resetState: () => initialState,
-        // logout: (state) => {
-        //     state.status = false;
-        //     state.userData = null;
-        //     state.error = null;
-        // }
+
     },
     extraReducers: (builder) => {
         builder
@@ -123,7 +183,9 @@ const authSlice = createSlice({
             .addCase(loginUser.fulfilled, (state, action) => {
                 state.loading = false;
                 state.status = true;
-                state.userData = action.payload.data.user;
+                // state.userData = action.payload.data.user;
+                state.accessToken = action.payload.data.accessToken
+
                 state.successMessage = action.payload.message;
             })
             .addCase(loginUser.rejected, (state, action) => {
@@ -138,8 +200,8 @@ const authSlice = createSlice({
             .addCase(logoutUser.fulfilled, (state, action) => {
                 state.loading = false;
                 state.status = false;
-                state.userData = null;
                 state.successMessage = action.payload.message;
+                state.accessToken = null
                 state.registered = false;
             })
             .addCase(logoutUser.rejected, (state, action) => {
@@ -158,6 +220,36 @@ const authSlice = createSlice({
             .addCase(signup.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+            })
+            // .addCase(getCurrentUser.pending, (state, action) => {
+            //     state.loading = true;
+            // })
+            // .addCase(getCurrentUser.fulfilled, (state, action) => {
+            //     state.loading = false;
+            //     state.userData = action.payload.data.user;
+            //     state.status = true;
+            // })
+            // .addCase(getCurrentUser.rejected, (state, action) => {
+            //     state.loading = false;
+            //     state.error = action.payload;
+            //     state.status = false
+            // })
+            .addCase(refreshToken.pending, (state, action) => {
+                state.loading = true;
+
+
+            })
+            .addCase(refreshToken.fulfilled, (state, action) => {
+                state.loading = false;
+                state.status = true;
+                state.accessToken = action.payload.data.accessToken
+            })
+            .addCase(refreshToken.rejected, (state, action) => {
+                state.loading = false;
+                state.status = false;
+                state.error = null;
+                state.accessToken = null
+
             });
     },
 

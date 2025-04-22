@@ -8,21 +8,28 @@ const initialState = {
     error: null,
     successMessage: false,
 };
+import { refreshToken, logoutUser } from "@/slices/authSlice";
+
 
 export const getData = createAsyncThunk(
     "problems/getData",
-    async (page, { rejectWithValue }) => {
+    async (page, { rejectWithValue, dispatch, getState }) => {
         try {
+            const state = getState();
+            const token = state.auth?.accessToken;
+
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_serverURL}/api/problem?page=${page}&limit=9`,
                 {
                     method: "GET",
-                    headers: {},
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
                     credentials: "include",
                 }
             );
             if (response.status == 401) {
-                // console.log(response)
+                // dispatch(refreshToken())
             }
             if (!response.ok) {
                 throw new Error(response.statusText);
@@ -31,20 +38,25 @@ export const getData = createAsyncThunk(
             const data = await response.json();
 
             return data; // This is the data returned on successful login
+
         } catch (error) {
-            // console.log(error.message) // Handle API call failure
-            // return error.message;
-            return rejectWithValue(error.message);
+            return rejectWithValue(error.message + " refresh the page");
+
         }
     }
+
 )
 export const getProblemsByUsername = createAsyncThunk(
     "problems/getProblemsByUsername",
-    async (username, { rejectWithValue }) => {
+    async (username, { rejectWithValue, getState }) => {
         try {
+            const state = getState();
+            const token = state.auth?.accessToken;
             const response = await fetch(`${process.env.NEXT_PUBLIC_serverURL}/api/problem/userProblems/${username}`, {
                 method: "GET",
-                headers: {},
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
                 credentials: "include",
 
             });
@@ -54,8 +66,8 @@ export const getProblemsByUsername = createAsyncThunk(
             }
 
             const data = await response.json();
-
             return data; // This is the data returned on successful login
+
         } catch (error) {
             // console.log(error.message) // Handle API call failure
             // return error.message;
@@ -66,14 +78,18 @@ export const getProblemsByUsername = createAsyncThunk(
 
 export const publishProblem = createAsyncThunk(
     "problems/publishProblem",
-    async (formData, { rejectWithValue }) => {
+    async (formData, { rejectWithValue, getState }) => {
         try {
+            const state = getState();
+            const token = state.auth?.accessToken;
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_serverURL}/api/problem`,
                 {
                     method: "POST",
                     headers: {
                         "Custom-Header": "value",
+                        Authorization: `Bearer ${token}`
+
                     },
                     body: formData,
                     credentials: "include",
@@ -110,8 +126,8 @@ const problemSlice = createSlice({
             })
             .addCase(getData.fulfilled, (state, action) => {
                 state.loading = false;
-
-                state.problems = action.payload.data;
+                state.successMessage = action.payload.message;
+                state.problems = action.payload.data.reverse();
 
             })
             .addCase(getData.rejected, (state, action) => {
@@ -140,7 +156,7 @@ const problemSlice = createSlice({
             })
             .addCase(publishProblem.fulfilled, (state, action) => {
                 state.loading = false;
-                state.successMessage = action.payload.statusCode === 200 ? true : false;
+                state.successMessage = true;
             })
             .addCase(publishProblem.rejected, (state, action) => {
                 state.loading = false;
@@ -152,7 +168,7 @@ const problemSlice = createSlice({
 
 
 
-// export const { logout } = authSlice.actions;
+
 export const { resetState2 } = problemSlice.actions;
 
 export default problemSlice.reducer;

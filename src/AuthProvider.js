@@ -1,27 +1,34 @@
 "use client"
-
-import { redirect } from "next/navigation";
+import React, { useEffect } from "react";
+// import { redirect } from "next/navigation";
 import { useSelector } from "react-redux"
+import { usePathname, useRouter } from "next/navigation";
+
 
 const AuthProvider = ({ children }) => {
     const { status, accessToken } = useSelector((state) => state.auth);
+    const pathname = usePathname();
+    const router = useRouter();
 
-    if (!status) {
-        if (!window.location.pathname.includes("/auth/Login") || !window.location.pathname.includes("/auth/Login")) {
-            return redirect("/auth/Login")
+    useEffect(() => {
+        if (!status) {
+            if (!pathname.includes("/auth/Login")) {
+                if (pathname.includes("/auth/signup")) {
+                    router.push("/auth/signup")
+                } else {
+                    router.push("/auth/Login")
+                }
+
+            }
+
         }
-        // if (!window.location.pathname=== "/auth/Login" ) {
-        //     redirect("/auth/Login")
-        // }
-    }
+    }, [pathname, status]);
     return (<>{children}</>);
-
-
-
-
-
-
-
 }
-
 export default AuthProvider
+
+
+
+
+
+

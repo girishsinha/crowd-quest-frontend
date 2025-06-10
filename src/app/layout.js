@@ -23,7 +23,11 @@ export default function RootLayout({ children }) {
         <body className=" relative sm:flex flex-row ">
           <SideNav />
           <div className="h-screen relative sm:w-4/6 xl:w-5/6 w-full " >
-            <Header /> <div className="flex justify-center w-full pt-20  h-full overflow-y-scroll "><AuthProvider>{children}</AuthProvider></div>
+            <Header /> <div className="flex justify-center w-full pt-20  h-full overflow-y-scroll ">
+              <AuthProvider>
+                {children}
+              </AuthProvider>
+            </div>
           </div>
           {/* <Analytics /> */}
         </body>

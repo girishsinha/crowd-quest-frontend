@@ -18,8 +18,8 @@ export default function Home() {
     <main >
       <div className="w-full">
         {/* <authProvider><Feed /></authProvider> */}
-        {status ? <Feed /> : <Login />}
-        {/* <Feed /> */}
+        {/* {status ? <Feed /> : <Login />} */}
+        <Feed />
         {/* <Login /> */}
         {/* <Registration /> */}
       </div>
